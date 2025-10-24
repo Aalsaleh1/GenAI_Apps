@@ -1,0 +1,22 @@
+!pip install langchain langchain-community langchain-openai openai faiss-cpu gradio tiktoken pypdf -q
+
+from langchain_community.document_loaders import WebBaseLoader, PyPDFLoader
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_community.vectorstores import FAISS
+from langchain_openai import OpenAIEmbeddings, ChatOpenAI
+from langchain.chains import RetrievalQA
+import gradio as gr
+from google.colab import userdata
+import os
+
+os.environ["OPENAI_API_KEY"] = userdata.get('openAI')
+
+from google.colab import files
+uploaded = files.upload()
+
+all_docs = []
+for filename in uploaded.keys():
+    loader = PyPDFLoader(filename)
+    all_docs.extend(loader.load())
+
+print(f"✅ Loaded {len(all_docs)} pages from uploaded PDFs.")
